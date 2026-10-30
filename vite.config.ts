@@ -7,8 +7,7 @@ export default defineConfig(({ command }) => ({
   worker: {
     rollupOptions: { output: { entryFileNames: 'assets/bvh.worker.js' } }
   },
-  // Keep the standalone library's Worker relative to the script on any host.
-  base: './',
+  base: '/mutracer/',
   experimental: {
     renderBuiltUrl(filename, { hostType }) {
       if (hostType === 'js' && filename === 'assets/bvh.worker.js') {

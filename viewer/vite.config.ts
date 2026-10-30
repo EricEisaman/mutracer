@@ -60,7 +60,7 @@ function thumbnailWriter(): Plugin {
 export default defineConfig({
   root: __dirname,
   publicDir: path.join(repoRoot, 'site/public'),
-  base: './',
+  base: '/mutracer/', // <-- fixed for GitHub Pages project site
   plugins: [react(), shaderFormattingPlugin(), oidnWeights(), thumbnailWriter()],
   resolve: {
     alias: [
