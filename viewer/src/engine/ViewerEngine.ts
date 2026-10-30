@@ -43,7 +43,7 @@ export interface ExportOptions {
 // The weights live at the server root: development serves the repository's
 // copy there, `build:viewer` emits them at the root of dist-viewer/, and the
 // site build (viewer under /viewer/) shares one copy with the examples.
-const OIDN_WEIGHTS = new URL('/oidn/weights/', document.baseURI).href;
+const OIDN_WEIGHTS = `${import.meta.env.BASE_URL}oidn/weights/`;
 const get = useViewer.getState;
 const set = useViewer.setState;
 const INITIAL_LIGHTING = Object.fromEntries(Object.entries(readURLSettings())
