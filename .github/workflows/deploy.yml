@@ -1,43 +1,40 @@
 name: Deploy to Pages
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: "pages"
   cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-
-      # root deps - viewer uses root src via alias
       - run: npm ci
-
-      # build viewer -> outputs to ./dist-viewer (defined in viewer/vite.config.ts)
+      - name: Fetch OIDN weights
+        run: |
+          ls -lh oidn/weights/ || true
+          mkdir -p oidn/weights
+          # only download if missing (runner has no LFS files)
+          [ -f oidn/weights/rt_hdr_alb_nrm.tza ] || curl -L -o oidn/weights/rt_hdr_alb_nrm.tza https://raw.githubusercontent.com/RenderKit/oidn-weights/master/rt_hdr_alb_nrm.tza
+          [ -f oidn/weights/rt_hdr_alb_nrm_small.tza ] || curl -L -o oidn/weights/rt_hdr_alb_nrm_small.tza https://raw.githubusercontent.com/RenderKit/oidn-weights/master/rt_hdr_alb_nrm_small.tza
       - name: Build viewer
         run: npx vite build --config viewer/vite.config.ts
-
+      - name: Verify weights in build
+        run: ls -lh dist-viewer/oidn/weights/
       - uses: actions/configure-pages@v5
-      
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist-viewer
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
